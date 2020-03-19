@@ -16,7 +16,12 @@ use Bops\Provider\Environment\ServiceProvider as EnvironmentServiceProvider;
 use Bops\Provider\ErrorHandler\ServiceProvider as ErrorHandlerServiceProvider;
 use Bops\Provider\EventsManager\ServiceProvider as EventsManagerServiceProvider;
 use Bops\Provider\Filesystem\ServiceProvider as FilesystemServiceProvider;
+use Bops\Provider\Logger\ServiceProvider as LoggerServiceProvider;
+use Bops\Provider\Router\ServiceProvider as RouterServiceProvider;
 use Bops\Provider\ServiceProviderInstaller;
+use Bops\Provider\Translator\ServiceProvider as TranslatorServiceProvider;
+use Bops\Provider\Url\ServiceProvider as UrlServiceProvider;
+use Bops\Provider\VersionUri\ServiceProvider as VersionUriServiceProvider;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 use League\Flysystem\Filesystem;
@@ -126,8 +131,13 @@ class Bootstrap {
      * @throws Exception\Provider\EmptyServiceNameException
      */
     protected function setupBuiltInServices() {
-        ServiceProviderInstaller::setup(new FilesystemServiceProvider($this->di));
         ServiceProviderInstaller::setup(new ConfigServiceProvider($this->di));
+        ServiceProviderInstaller::setup(new FilesystemServiceProvider($this->di));
+        ServiceProviderInstaller::setup(new LoggerServiceProvider($this->di));
+        ServiceProviderInstaller::setup(new RouterServiceProvider($this->di));
+        ServiceProviderInstaller::setup(new TranslatorServiceProvider($this->di));
+        ServiceProviderInstaller::setup(new UrlServiceProvider($this->di));
+        ServiceProviderInstaller::setup(new VersionUriServiceProvider($this->di));
     }
 
     /**

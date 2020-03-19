@@ -104,3 +104,31 @@ if (!function_exists('_url')) {
         return container('url')->get($uri, $args, $local, $baseUri);
     }
 }
+
+if (!function_exists('_config')) {
+    /**
+     * Gets the value from config service and default when key not found
+     *
+     * @param $paths
+     * @param null|mixed $default
+     * @param string $delimiter
+     * @return mixed
+     */
+    function _config($paths, $default = null, string $delimiter = '.') {
+        if (!is_array($paths)) {
+            $paths = explode($delimiter, strval($paths));
+        }
+
+        if ($config = container('config')) {
+            foreach ($paths as $path) {
+                if (isset($config->{$path})) {
+                    $config = $config->{$path};
+                } else {
+                    return $default;
+                }
+            }
+            return $config;
+        }
+        return $default;
+    }
+}
