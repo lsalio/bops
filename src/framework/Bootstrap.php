@@ -12,6 +12,7 @@ use Bops\Application\ApplicationInterface;
 use Bops\Exception\Framework\Bootstrap\UnknownApplicationException;
 use Bops\Listener\Adapter\Dispatcher as DispatcherListener;
 use Bops\Listener\Adapter\View as ViewListener;
+use Bops\Mvc\Application;
 use Bops\Mvc\Dispatcher\Factory as DispatcherFactory;
 use Bops\Mvc\View\Factory;
 use Bops\Navigator\NavigatorInterface;
@@ -150,6 +151,7 @@ class Bootstrap {
         $this->di->setShared('dispatcher.listener', new DispatcherListener());
         $this->di->setShared('view.listener', new ViewListener());
         // defaults
+        $this->di->setShared('application', new Application());
         $this->di->setShared('dispatcher', DispatcherFactory::factory(/* module */''));
         $this->di->setShared('view', Factory::html());
     }
