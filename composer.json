@@ -12,6 +12,8 @@
     ],
     "require": {
         "php": ">=7.2",
+        "ext-json": "*",
+        "ext-mbstring": "*",
         "wjiec/xet": "^1.0",
         "vlucas/phpdotenv": "^4.1",
         "filp/whoops": "^2.7",

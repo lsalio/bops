@@ -69,7 +69,7 @@ class Factory {
         $config = new Config();
         $basedir = container('navigator')->configCacheDir();
 
-        /* @var $filesystem Filesystem */
+        /* @var Filesystem $filesystem */
         $filesystem = container('filesystem', container('navigator')->configCacheDir());
         if ($filesystem->has("{$this->name}.php") && !container('environment')->contains('development')) {
             return static::merge($config, $basedir . "/{$this->name}.php");

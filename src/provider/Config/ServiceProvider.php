@@ -38,7 +38,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     public function register() {
         $this->di->setShared($this->name(), function() {
-            /* @var $filesystem Filesystem */
+            /* @var Filesystem $filesystem */
             $filesystem = container('filesystem', container('navigator')->configDir());
             $filesystem->addPlugin(new ListFiles());
 

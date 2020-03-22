@@ -10,6 +10,10 @@ namespace Bops;
 
 use Bops\Application\ApplicationInterface;
 use Bops\Exception\Framework\Bootstrap\UnknownApplicationException;
+use Bops\Listener\Adapter\Dispatcher as DispatcherListener;
+use Bops\Listener\Adapter\View as ViewListener;
+use Bops\Mvc\Dispatcher\Factory as DispatcherFactory;
+use Bops\Mvc\View\Factory;
 use Bops\Navigator\NavigatorInterface;
 use Bops\Provider\Config\ServiceProvider as ConfigServiceProvider;
 use Bops\Provider\Environment\ServiceProvider as EnvironmentServiceProvider;
@@ -22,6 +26,7 @@ use Bops\Provider\ServiceProviderInstaller;
 use Bops\Provider\Translator\ServiceProvider as TranslatorServiceProvider;
 use Bops\Provider\Url\ServiceProvider as UrlServiceProvider;
 use Bops\Provider\VersionUri\ServiceProvider as VersionUriServiceProvider;
+use Bops\Provider\Volt\ServiceProvider as VoltServiceProvider;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 use League\Flysystem\Filesystem;
@@ -58,22 +63,23 @@ class Bootstrap {
         $this->di->setShared('navigator', $navigator);
 
         $this->setupEnvironment($navigator);
-        ServiceProviderInstaller::setup(new ErrorHandlerServiceProvider($this->di));
-        ServiceProviderInstaller::setup(new EventsManagerServiceProvider($this->di));
+        ServiceProviderInstaller::setup(new ErrorHandlerServiceProvider());
+        ServiceProviderInstaller::setup(new EventsManagerServiceProvider());
         $this->setupServices($navigator);
     }
 
     /**
      * Run the application
      *
+     * @param string $uri
      * @return string
      * @throws UnknownApplicationException
      */
-    public function run(): string {
+    public function run(string $uri = ''): string {
         if ($application = container('application')) {
             if ($application instanceof ApplicationInterface) {
                 /** @noinspection PhpUndefinedMethodInspection */
-                return $application->handle()->getContent();
+                return $application->handle($uri)->getContent();
             }
         }
         throw new UnknownApplicationException('The application service does not defined');
@@ -89,7 +95,7 @@ class Bootstrap {
         try {
             Dotenv::createMutable($navigator->rootDir())->load();
             if ($env = env('BOPS_ENVIRONMENT', 'development')) {
-                ServiceProviderInstaller::setup(new EnvironmentServiceProvider($this->di));
+                ServiceProviderInstaller::setup(new EnvironmentServiceProvider());
                 container('environment', $env);
 
                 Dotenv::createMutable($navigator->rootDir(), [".env.{$env}"])->load();
@@ -105,7 +111,7 @@ class Bootstrap {
      */
     protected function setupServices(NavigatorInterface $navigator) {
         $this->setupBuiltInServices();
-        /* @var $filesystem Filesystem */
+        /* @var Filesystem $filesystem */
         if ($filesystem = container('filesystem', $navigator->configDir())) {
             if ($filesystem->has('providers.php')) {
                 /** @noinspection PhpIncludeInspection */
@@ -118,7 +124,7 @@ class Bootstrap {
             if ($filesystem->has('services.php')) {
                 /** @noinspection PhpIncludeInspection */
                 $services = include $navigator->configDir('services.php');
-                if (is_array($services) && !empty($providers)) {
+                if (is_array($services) && !empty($services)) {
                     $this->setRawServices($services);
                 }
             }
@@ -131,13 +137,21 @@ class Bootstrap {
      * @throws Exception\Provider\EmptyServiceNameException
      */
     protected function setupBuiltInServices() {
-        ServiceProviderInstaller::setup(new ConfigServiceProvider($this->di));
-        ServiceProviderInstaller::setup(new FilesystemServiceProvider($this->di));
-        ServiceProviderInstaller::setup(new LoggerServiceProvider($this->di));
-        ServiceProviderInstaller::setup(new RouterServiceProvider($this->di));
-        ServiceProviderInstaller::setup(new TranslatorServiceProvider($this->di));
-        ServiceProviderInstaller::setup(new UrlServiceProvider($this->di));
-        ServiceProviderInstaller::setup(new VersionUriServiceProvider($this->di));
+        // generic services
+        ServiceProviderInstaller::setup(new ConfigServiceProvider());
+        ServiceProviderInstaller::setup(new FilesystemServiceProvider());
+        ServiceProviderInstaller::setup(new LoggerServiceProvider());
+        ServiceProviderInstaller::setup(new RouterServiceProvider());
+        ServiceProviderInstaller::setup(new TranslatorServiceProvider());
+        ServiceProviderInstaller::setup(new UrlServiceProvider());
+        ServiceProviderInstaller::setup(new VersionUriServiceProvider());
+        ServiceProviderInstaller::setup(new VoltServiceProvider());
+        // listener services
+        $this->di->setShared('dispatcher.listener', new DispatcherListener());
+        $this->di->setShared('view.listener', new ViewListener());
+        // defaults
+        $this->di->setShared('dispatcher', DispatcherFactory::factory(/* module */''));
+        $this->di->setShared('view', Factory::html());
     }
 
     /**
@@ -147,7 +161,7 @@ class Bootstrap {
      */
     protected function setupServiceProviders(array $providers) {
         foreach ($providers as $provider) {
-            ServiceProviderInstaller::setup(new $provider($this->di));
+            ServiceProviderInstaller::setup(new $provider());
         }
     }
 

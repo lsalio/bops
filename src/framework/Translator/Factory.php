@@ -8,6 +8,7 @@
  */
 namespace Bops\Translator;
 
+use League\Flysystem\Filesystem;
 use Phalcon\Translate\Adapter;
 use Phalcon\Translate\Adapter\NativeArray;
 
@@ -33,6 +34,12 @@ class Factory {
     public static function factory(string $language = ''): Adapter {
         $language = self::extraLanguage($language);
         if (!isset(static::$translators[$language])) {
+            /* @var Filesystem $filesystem */
+            $filesystem = container('filesystem', container('navigator')->localeDir());
+            if (!$filesystem->has("{$language}.php")) {
+                $language = env('SERVICE_TRANSLATOR_FALLBACK', 'en');
+            }
+
             /** @noinspection PhpIncludeInspection */
             static::$translators[$language] = new NativeArray([
                 'content' => container('navigator')->localeDir("{$language}.php")
@@ -53,7 +60,7 @@ class Factory {
         }
 
         if (empty($language)) {
-            return _config('locale.default');
+            return env('SERVICE_TRANSLATOR_DEFAULT');
         }
         return $language;
     }

@@ -48,13 +48,15 @@ class Version {
      * @throws ModuleNameReservedException
      */
     public function __construct() {
-        // @TODO
         $this->states = array();
-        $this->modules = container('config')->modules->classes->toArray();
-        foreach ($this->modules as $name => $module) {
-            $this->states[$name] = false;
-            if (isset($module['metadata']) && is_array($module['metadata'])) {
-                $this->states[$name] = $module['metadata']['versionUri'] ?? false;
+
+        if (isset(container('config')->modules)) {
+            $this->modules = container('config')->modules->toArray();
+            foreach ($this->modules as $name => $module) {
+                $this->states[$name] = false;
+                if (isset($module['metadata']) && is_array($module['metadata'])) {
+                    $this->states[$name] = $module['metadata']['versionUri'] ?? false;
+                }
             }
         }
 

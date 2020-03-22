@@ -32,17 +32,18 @@ class Router extends MvcRouter {
     }
 
     /**
-     * Gets uri from request override by versionFeature
+     * Gets uri from request override by versionUri
      *
-     * @see Router::getRewriteUri()
+     * @param string $uri
      * @return string
+     * @see Router::getRewriteUri()
      */
-    public function getVersionFeatureUri(): string {
-        $uri = $this->getRewriteUri();
+    public function getVersionFeatureUri(string $uri = ''): string {
+        $uri = $uri ?: $this->getRewriteUri();
         if (preg_match('/^\/v(?<version>\d+)(?<uri>.*)/', $uri, $matches)) {
-            $trimmed_uri = $matches['uri'] ?: '/';
+            $trimmedUri = $matches['uri'] ?: '/';
             $module = container('app')->getDefaultModule();
-            if (preg_match('/\/(?<module>\w+)\/?.*/', $trimmed_uri, $paths)) {
+            if (preg_match('/\/(?<module>\w+)\/?.*/', $trimmedUri, $paths)) {
                 $module = $paths['module'];
             }
 
@@ -50,7 +51,7 @@ class Router extends MvcRouter {
             $version = container('versionUri');
             if ($version->strictCheck($module)) {
                 $version->setNumber((int)$matches['version']);
-                return $trimmed_uri;
+                return $trimmedUri;
             }
         }
 
@@ -90,12 +91,13 @@ class Router extends MvcRouter {
      * @return void
      */
     protected function initNotFoundAction() {
-        $error = container('config')->notFound;
-        if (isset($error->controller) && isset($error->action)) {
-            $this->notFound([
-                'controller' => $error->controller,
-                'action' => $error->action
-            ]);
+        if ($controller = env('BOPS_ERROR_FORWARD_CONTROLLER', 'error')) {
+            if ($action = env('BOPS_ERROR_FORWARD_NOT_FOUND', 'notFound')) {
+                $this->notFound([
+                    'controller' => $controller,
+                    'action' => $action
+                ]);
+            }
         }
     }
 

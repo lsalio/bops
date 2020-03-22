@@ -37,7 +37,6 @@ class Application extends MvcApplication implements ApplicationInterface {
             }
         }
 
-        // @TODO
         $this->setupModules();
     }
 
@@ -45,9 +44,9 @@ class Application extends MvcApplication implements ApplicationInterface {
      * @param null $uri
      * @return ResponseInterface
      */
-    public function handle($uri = null) {
+    public function handle($uri = null): ResponseInterface {
         /* @see Router::getVersionFeatureUri() */
-        return parent::handle(container('router')->getVersionFeatureUri());
+        return parent::handle(container('router')->getVersionFeatureUri($uri));
     }
 
     /**
@@ -55,8 +54,13 @@ class Application extends MvcApplication implements ApplicationInterface {
      * to the application
      */
     private function setupModules() {
-        $this->registerModules(container('config')->modules->classes->toArray());
-        $this->setDefaultModule(container('config')->modules->default);
+        if ($module = env('SERVICE_APPLICATION_MODULE_DEFAULT')) {
+            $this->setDefaultModule($module);
+        }
+
+        if (isset(container('config')->modules)) {
+            $this->registerModules(container('config')->modules->toArray());
+        }
     }
 
 }

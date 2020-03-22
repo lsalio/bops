@@ -8,9 +8,8 @@
  */
 namespace Bops\Provider;
 
+use Bops\Di\Component;
 use Bops\Exception\Provider\EmptyServiceNameException;
-use Phalcon\DiInterface;
-use Phalcon\Mvc\User\Component;
 
 
 /**
@@ -23,15 +22,14 @@ abstract class AbstractServiceProvider extends Component implements ServiceProvi
     /**
      * AbstractServiceProvider constructor.
      *
-     * @param DiInterface $di
      * @throws EmptyServiceNameException
      */
-    public function __construct(DiInterface $di) {
+    public function __construct() {
+        parent::__construct();
         if (empty($this->name())) {
             throw new EmptyServiceNameException(sprintf('The service provider "%s" cannot have an empty name',
                 get_class($this)));
         }
-        $this->setDI($di);
     }
 
     /**

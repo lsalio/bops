@@ -58,7 +58,7 @@ class ServiceProvider extends AbstractServiceProvider {
      * @return void
      */
     public function initialize() {
-        /* @var $run Run */
+        /* @var Run $run */
         if ($run = container($this->name())) {
             $run->register();
         }

@@ -8,7 +8,6 @@
  */
 namespace Bops\Error\Handler;
 
-use Psr\Log\LoggerInterface;
 use Whoops\Exception\Frame;
 use Whoops\Handler\Handler;
 
@@ -24,23 +23,11 @@ class Logger extends Handler {
      * @inheritDoc
      * @return int|null
      */
-    final public function handle() {
-        if ($logger = $this->getLogger()) {
+    public function handle() {
+        if ($logger = container('logger')) {
             $logger->error($this->getLogContents());
         }
         return self::DONE;
-    }
-
-    /**
-     * Get a logger from container
-     *
-     * @return LoggerInterface|null
-     */
-    final private function getLogger(): ?LoggerInterface {
-        if (container()->has('logger')) {
-            return container('logger');
-        }
-        return null;
     }
 
     /**
@@ -48,12 +35,12 @@ class Logger extends Handler {
      *
      * @return string
      */
-    final private function getLogContents(): string {
+    protected function getLogContents(): string {
         $exception = $this->getException();
         return sprintf("<%s:%d> %s: %s\n%s STACKTRACE %s\n%s",
             $exception->getFile(), $exception->getLine(),
             get_class($exception), $exception->getMessage(),
-            $this->getTitleSeparator(), $this->getTitleSeparator(),
+            str_pad('', 24, '='), str_pad('', 24, '='),
             $this->getStackTrace()
         );
     }
@@ -63,7 +50,7 @@ class Logger extends Handler {
      *
      * @return string
      */
-    final private function getStackTrace(): string {
+    protected function getStackTrace(): string {
         $frames = $this->getInspector()->getFrames();
 
         $stacktrace = '';
@@ -83,26 +70,18 @@ class Logger extends Handler {
      * @param Frame $frame
      * @return string
      */
-    final private function getFunctionArgs(Frame $frame): string {
+    protected function getFunctionArgs(Frame $frame): string {
         return join(",", array_map(function($arg) {
             switch (true) {
                 case is_string($arg):   return "string{{$arg}}";
                 case is_numeric($arg):  return "number{{$arg}}";
                 case is_bool($arg):     return "boolean{{$arg}}";
                 case is_null($arg):     return "null{null}";
+                case is_array($arg):    return "array{...}";
                 case is_object($arg):   return sprintf('object{%s}', get_class($arg));
             }
             return '???{???}';
         }, $frame->getArgs()));
-    }
-
-    /**
-     * Gets the separator of the stacktrace title
-     *
-     * @return string
-     */
-    final private function getTitleSeparator(): string {
-        return str_pad('', 24, '=');
     }
 
 }

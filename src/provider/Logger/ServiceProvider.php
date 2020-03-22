@@ -38,7 +38,7 @@ class ServiceProvider extends AbstractServiceProvider {
     public function register() {
         $this->di->set($this->name(), function(string $filename = '') {
             $level = self::LOGGER_DEFAULT_LEVEL;
-            if ($config = _config('logger.level')) {
+            if ($config = env('SERVICE_LOGGER_LEVEL')) {
                 switch (strtolower($config)) {
                     case 'emergency': $level = Logger::EMERGENCY; break;
                     case 'critical': $level = Logger::CRITICAL; break;
@@ -53,24 +53,26 @@ class ServiceProvider extends AbstractServiceProvider {
 
             if (empty($filename)) {
                 $filename = self::LOGGER_DEFAULT_FILENAME;
-                if ($config = _config('logger.filename')) {
+                if ($config = env('SERVICE_LOGGER_FILENAME')) {
                     $filename = rtrim($config, '\\/');
                 }
             }
 
             $format = self::LOGGER_DEFAULT_FORMAT;
-            if ($config = _config('logger.format')) {
+            if ($config = env('SERVICE_LOGGER_FORMAT')) {
                 $format = $config;
             }
 
             $dateFormat = self::LOGGER_DEFAULT_DATE_FORMAT;
-            if ($config = _config('logger.date')) {
+            if ($config = env('SERVICE_LOGGER_DATE_FORMAT')) {
                 $dateFormat = $config;
             }
 
             $logger = new FileLogger(container('navigator')->logDir("{$filename}.log"));
             $logger->setFormatter(new LineFormatter($format, $dateFormat));
             $logger->setLogLevel($level);
+
+            return $logger;
         });
     }
 
