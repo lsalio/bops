@@ -16,6 +16,7 @@ use Bops\Mvc\Application;
 use Bops\Mvc\Dispatcher\Factory as DispatcherFactory;
 use Bops\Mvc\View\Factory;
 use Bops\Navigator\NavigatorInterface;
+use Bops\Provider\Cache\ServiceProvider as CacheServiceProvider;
 use Bops\Provider\Config\ServiceProvider as ConfigServiceProvider;
 use Bops\Provider\Database\ServiceProvider as DatabaseServiceProvider;
 use Bops\Provider\Environment\ServiceProvider as EnvironmentServiceProvider;
@@ -140,6 +141,7 @@ class Bootstrap {
      */
     protected function setupBuiltInServices() {
         // generic services
+        ServiceProviderInstaller::setup(new CacheServiceProvider());
         ServiceProviderInstaller::setup(new ConfigServiceProvider());
         ServiceProviderInstaller::setup(new DatabaseServiceProvider());
         ServiceProviderInstaller::setup(new FilesystemServiceProvider());

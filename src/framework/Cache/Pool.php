@@ -6,16 +6,18 @@
  * @license   MIT License
  * @link      https://github.com/wjiec/php-bops
  */
-namespace Bops\Database;
+namespace Bops\Cache;
 
 use Bops\Utils\Env\Pool\Connection;
-use Phalcon\Db\Adapter\Pdo\Factory as PdoFactory;
+use Phalcon\Cache\Backend\Factory;
+use Phalcon\Cache\Frontend\Factory as FrontendFactory;
+use function Xet\array_at;
 
 
 /**
  * Class Pool
  *
- * @package Bops\Database
+ * @package Bops\Cache
  */
 class Pool extends Connection {
 
@@ -26,7 +28,7 @@ class Pool extends Connection {
      * @return string
      */
     protected function getPrefix(string $name): string {
-        return sprintf('SERVICE_DATABASE_%s_', strtoupper($name));
+        return sprintf('SERVICE_CACHE_%s_', strtoupper($name));
     }
 
     /**
@@ -36,7 +38,14 @@ class Pool extends Connection {
      * @return mixed
      */
     protected function makeConnection(array $config) {
-        return PdoFactory::load($config);
+        $frontend = [
+            'adapter' => array_at($config, 'frontend', 'data'),
+            'lifetime' => array_at($config, 'lifetime', 86400)
+        ];
+        $config['frontend'] = FrontendFactory::load($frontend);
+
+        unset($config['lifetime']);
+        return Factory::load($config);
     }
 
 }

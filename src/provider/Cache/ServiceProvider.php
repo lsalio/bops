@@ -6,9 +6,9 @@
  * @license   MIT License
  * @link      https://github.com/wjiec/php-bops
  */
-namespace Bops\Provider\Database;
+namespace Bops\Provider\Cache;
 
-use Bops\Database\Pool;
+use Bops\Cache\Pool;
 use Bops\Provider\AbstractServiceProvider;
 use Bops\Utils\Env\Pool\ConnectionInstaller;
 
@@ -16,7 +16,7 @@ use Bops\Utils\Env\Pool\ConnectionInstaller;
 /**
  * Class ServiceProvider
  *
- * @package Bops\Provider\Database
+ * @package Bops\Provider\Cache
  */
 class ServiceProvider extends AbstractServiceProvider {
 
@@ -26,7 +26,7 @@ class ServiceProvider extends AbstractServiceProvider {
      * @return string
      */
     public function name(): string {
-        return 'db';
+        return 'cache';
     }
 
     /**
@@ -36,13 +36,13 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     public function register() {
         $pool = new Pool();
-        if ($primary = env('SERVICE_CACHE_PROVIDER_PRIMARY')) {
+        if ($primary = env('SERVICE_DATABASE_PROVIDER_PRIMARY')) {
             $pool->setPrimary($primary);
         }
-        if ($writers = env('SERVICE_CACHE_PROVIDER_WRITER')) {
+        if ($writers = env('SERVICE_DATABASE_PROVIDER_WRITER')) {
             $pool->setWriters(array_map('trim', explode(',', $writers)));
         }
-        if ($readers = env('SERVICE_CACHE_PROVIDER_READERS')) {
+        if ($readers = env('SERVICE_DATABASE_PROVIDER_READERS')) {
             $pool->setReaders(array_map('trim', explode(',', $readers)));
         }
 
