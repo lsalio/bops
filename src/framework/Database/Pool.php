@@ -8,7 +8,9 @@
  */
 namespace Bops\Database;
 
-use Bops\Utils\Env\Pool\Adapter\Connection;
+use Bops\Exception\Framework\Database\DatabaseDriverException;
+use Bops\Utils\Env\Pool\Connection;
+use Phalcon\Db\Adapter\Pdo\Factory as PdoFactory;
 
 
 /**
@@ -29,13 +31,17 @@ class Pool extends Connection {
     }
 
     /**
-     * Make a connection and append into pool
+     * Make a connection
      *
      * @param array $config
      * @return mixed
+     * @throws DatabaseDriverException
      */
-    protected function doMakeConnection(array $config) {
-        return '';
+    protected function makeConnection(array $config) {
+        if (empty($config['adapter'])) {
+            throw new DatabaseDriverException("Unknown the name of the database adapter");
+        }
+        return PdoFactory::load($config);
     }
 
 }

@@ -50,10 +50,16 @@ class ServiceProvider extends AbstractServiceProvider {
         });
 
         $this->di->setShared("{$this->name()}.pool", $pool);
-    }
-
-    public function initialize() {
-        var_dump(container("{$this->name()}.pool"));
+        foreach ($pool->getWriters() as $writer) {
+            $this->di->setShared("{$this->name()}.writer.{$writer}", function () use ($pool, $writer) {
+                return $pool->getWriter($writer);
+            });
+        }
+        foreach ($pool->getReaders() as $reader) {
+            $this->di->setShared("{$this->name()}.reader.{$reader}", function () use ($pool, $reader) {
+                return $pool->getReader($reader);
+            });
+        }
     }
 
 }
