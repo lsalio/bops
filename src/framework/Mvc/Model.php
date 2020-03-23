@@ -8,8 +8,10 @@
  */
 namespace Bops\Mvc;
 
+use Bops\Database\Pool;
 use Bops\Exception\Framework\Mvc\Model\ModelSaveException;
 use Phalcon\Mvc\Model as MvcModel;
+use Phalcon\Mvc\Model\ResultsetInterface;
 use Throwable;
 
 
@@ -23,7 +25,16 @@ abstract class Model extends MvcModel {
     /**
      * Sets up the model
      */
-    public function initialize() {}
+    public function initialize() {
+        /* @var Pool $pool */
+        $pool = container('db.pool');
+        if (!empty($pool->getWriters())) {
+            $this->setWriteConnectionService("db.writer.{$pool->getRandomWriter()}");
+        }
+        if (!empty($pool->getReaders())) {
+            $this->setReadConnectionService("db.reader.{$pool->getRandomReader()}");
+        }
+    }
 
     /**
      * Returns the save and refresh succeed both
@@ -48,7 +59,7 @@ abstract class Model extends MvcModel {
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return MvcModel\ResultsetInterface
+     * @return ResultsetInterface
      */
     public static function find($parameters = null) {
         return parent::find($parameters);

@@ -57,7 +57,7 @@ abstract class Connection {
      * Connection constructor.
      */
     public function __construct() {
-        $this->primary = '';
+        $this->primary = null;
         $this->writers = [];
         $this->readers = [];
         $this->connections = [];
