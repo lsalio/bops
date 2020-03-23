@@ -55,8 +55,9 @@ class Bootstrap {
     /**
      * Bootstrap constructor.
      *
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @param NavigatorInterface $navigator
-     * @throws Exception\Provider\EmptyServiceNameException
      */
     public function __construct(NavigatorInterface $navigator) {
         $this->di = new FactoryDefault();
@@ -65,9 +66,11 @@ class Bootstrap {
         $this->di->setShared('bootstrap', $this);
         $this->di->setShared('navigator', $navigator);
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->setupEnvironment($navigator);
         ServiceProviderInstaller::setup(new ErrorHandlerServiceProvider());
         ServiceProviderInstaller::setup(new EventsManagerServiceProvider());
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->setupServices($navigator);
     }
 

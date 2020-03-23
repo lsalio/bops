@@ -6,6 +6,7 @@
  * @license   MIT License
  * @link      https://github.com/wjiec/php-bops
  */
+declare(strict_types=1);
 
 use Phalcon\Di;
 use Phalcon\DiInterface;
