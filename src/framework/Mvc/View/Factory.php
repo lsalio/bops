@@ -51,8 +51,7 @@ class Factory {
             }
         }
 
-        /* @var ViewInterface $view */
-        return $view;
+        return $view->loadConfig($config);
     }
 
     /**
