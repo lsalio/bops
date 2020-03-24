@@ -8,6 +8,7 @@
  */
 namespace Bops\Database;
 
+use Bops\Listener\ListenerInterface;
 use Bops\Utils\Env\Pool\Connection;
 use Phalcon\Db\Adapter\Pdo\Factory as PdoFactory;
 
@@ -36,7 +37,16 @@ class Pool extends Connection {
      * @return mixed
      */
     protected function makeConnection(array $config) {
-        return PdoFactory::load($config);
+        $connection = PdoFactory::load($config);
+
+        $connection->setEventsManager(container('eventsManager'));
+        if ($listener = container('db.listener')) {
+            if ($listener instanceof ListenerInterface) {
+                container('eventsManager')->attach('db', $listener);
+            }
+        }
+
+        return $connection;
     }
 
 }
