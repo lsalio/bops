@@ -88,10 +88,11 @@ abstract class AbstractModule implements ModuleInterface {
     protected function setupModuleConfig(DiInterface $di): void {
         $serviceName = $this->configServiceName();
         if (!empty($this->configDir()) && !empty($serviceName)) {
+            $dir = $this->configDir();
             $configs = $this->configModules();
             $name = str_replace('\\', '_', strtolower(get_class($this)));
-            $di->setShared($serviceName, function() use ($name, $configs) {
-                return (new ConfigFactory($name, new LocalDirectory($this->configDir())))
+            $di->setShared($serviceName, function() use ($dir, $name, $configs) {
+                return (new ConfigFactory($name, new LocalDirectory($dir)))
                     ->load(array_merge(['config'], $configs));
             });
         } else {
