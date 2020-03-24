@@ -10,6 +10,7 @@
  */
 namespace Bops\Listener\Adapter;
 
+use Bops\Http\Request\Middleware\MiddlewareInterface;
 use Bops\Http\Uri\Version;
 use Bops\Listener\AbstractListener;
 use Bops\Mvc\Controller\Tagging\Deeper;
@@ -27,6 +28,46 @@ use Whoops\Run;
  * @package Bops\Listener\Adapter
  */
 class Dispatcher extends AbstractListener {
+
+    /**
+     * Trigger before on handler execute
+     *
+     * @param Event $event
+     * @param MvcDispatcher $dispatcher
+     * @return bool|void
+     */
+    public function beforeExecuteRoute(Event $event, MvcDispatcher $dispatcher) {
+        if ($controller = env('BOPS_ERROR_FORWARD_CONTROLLER', 'error')) {
+            if ($dispatcher->getControllerName() !== $controller) {
+                return;
+            }
+        }
+
+        if ($deque = container('middlewareQueue')) {
+            /* @var MiddlewareInterface $middleware */
+            foreach ($deque as $middleware) {
+                try {
+                    if ($middleware->process(container('request'))) {
+                        continue;
+                    }
+                } catch (Throwable $e) {
+                    container('logger', 'middleware')
+                        ->error(sprintf("Middleware '%s' error occurs: %s",
+                            get_class($middleware), $e->getMessage()));
+                }
+
+                if ($controller = env('BOPS_ERROR_FORWARD_CONTROLLER', 'error')) {
+                    if ($action = env('BOPS_ERROR_FORWARD_MIDDLEWARE_ERROR', 'middleware')) {
+                        return $dispatcher->forward([
+                            'controller' => $controller,
+                            'action' => $action,
+                            'params' => [$middleware]
+                        ]);
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Triggered before the dispatcher throws any exception

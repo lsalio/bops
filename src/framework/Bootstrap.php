@@ -10,6 +10,7 @@ namespace Bops;
 
 use Bops\Application\ApplicationInterface;
 use Bops\Exception\Framework\Bootstrap\UnknownApplicationException;
+use Bops\Listener\Adapter\Database as DatabaseListener;
 use Bops\Listener\Adapter\Dispatcher as DispatcherListener;
 use Bops\Listener\Adapter\View as ViewListener;
 use Bops\Mvc\Application;
@@ -157,6 +158,7 @@ class Bootstrap {
         // listener services
         $this->di->setShared('dispatcher.listener', new DispatcherListener());
         $this->di->setShared('view.listener', new ViewListener());
+        $this->di->setShared('db.listener', new DatabaseListener());
         // defaults
         $this->di->setShared('application', new Application());
         $this->di->setShared('dispatcher', DispatcherFactory::factory(/* module */''));
