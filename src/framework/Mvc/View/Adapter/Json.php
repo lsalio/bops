@@ -26,13 +26,6 @@ class Json extends AbstractView {
     protected $flags = null;
 
     /**
-     * response structure
-     *
-     * @var array
-     */
-    protected $format = array();
-
-    /**
      * Load config
      *
      * @param array $config
@@ -42,11 +35,6 @@ class Json extends AbstractView {
         if (isset($config['jsonFlags'])) {
             $this->flags = $config['jsonFlags'];
         }
-
-        if (isset($config['jsonFormat']) && is_array($config['jsonFormat'])) {
-            $this->format = $config['jsonFormat'];
-        }
-
         return $this;
     }
 
@@ -65,11 +53,7 @@ class Json extends AbstractView {
      * @return string|void
      */
     public function getContent() {
-        $object = [];
-        foreach ($this->format as $name => $key) {
-            $object[$key] = $this->getVar($name);
-        }
-        return json_encode($object, $this->flags);
+        return json_encode($this->_viewParams, $this->flags);
     }
 
 }
