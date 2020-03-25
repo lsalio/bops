@@ -55,9 +55,11 @@ class Dispatcher extends AbstractListener {
                             get_class($middleware), $e->getMessage()));
                 }
 
+                container('response')->setStatusCode(400);
                 if ($controller = env('BOPS_ERROR_FORWARD_CONTROLLER', 'error')) {
                     if ($action = env('BOPS_ERROR_FORWARD_MIDDLEWARE_ERROR', 'middleware')) {
-                        return $dispatcher->forward([
+                        // @TODO Phalcon bug?
+                        $dispatcher->forward([
                             'controller' => $controller,
                             'action' => $action,
                             'params' => [$middleware]

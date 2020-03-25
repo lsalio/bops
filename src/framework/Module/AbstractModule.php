@@ -37,7 +37,14 @@ abstract class AbstractModule implements ModuleInterface {
         foreach ($this->serviceProviders() as $provider) {
             ServiceProviderInstaller::setup(new $provider());
         }
+
+        $this->initialize();
     }
+
+    /**
+     * Initializing service more
+     */
+    protected function initialize() {}
 
     /**
      * Returns an array of the service providers
