@@ -37,10 +37,9 @@ class Dispatcher extends AbstractListener {
      * @return bool|void
      */
     public function beforeExecuteRoute(Event $event, MvcDispatcher $dispatcher) {
-        if ($controller = env('BOPS_ERROR_FORWARD_CONTROLLER', 'error')) {
-            if ($dispatcher->getControllerName() !== $controller) {
-                return;
-            }
+        // Check if only process middleware when first time
+        if ($dispatcher->wasForwarded()) {
+            return;
         }
 
         if ($deque = container('middlewareQueue')) {
