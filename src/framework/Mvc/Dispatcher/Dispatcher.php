@@ -64,7 +64,7 @@ class Dispatcher extends MvcDispatcher {
      * @return string
      */
     public function getModuleNameWithDefault(): string {
-        return $this->getModuleName() ?: container('app')->getDefaultModule();
+        return $this->getModuleName() ?: container('application')->getDefaultModule();
     }
 
     /**

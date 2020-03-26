@@ -42,7 +42,7 @@ class Router extends MvcRouter {
         $uri = $uri ?: $this->getRewriteUri();
         if (preg_match('/^\/v(?<version>\d+)(?<uri>.*)/', $uri, $matches)) {
             $trimmedUri = $matches['uri'] ?: '/';
-            $module = container('app')->getDefaultModule();
+            $module = container('application')->getDefaultModule();
             if (preg_match('/\/(?<module>\w+)\/?.*/', $trimmedUri, $paths)) {
                 $module = $paths['module'];
             }
