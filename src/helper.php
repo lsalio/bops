@@ -2,6 +2,8 @@
 /**
  * This file is part of bops
  *
+ * @noinspection PhpRedundantCatchClauseInspection
+ *
  * @copyright Copyright (C) 2020 Jayson Wang
  * @license   MIT License
  * @link      https://github.com/wjiec/php-bops
@@ -68,10 +70,11 @@ if (!function_exists('container')) {
             return $di;
         }
 
-        if (!$di->has($service)) {
+        try {
+            return call_user_func_array([$di, 'get'], [$service, $args]);
+        } catch (Di\Exception $e) {
             return null;
         }
-        return call_user_func_array([$di, 'get'], [$service, $args]);
     }
 }
 
