@@ -94,6 +94,7 @@ class Router extends MvcRouter {
         if ($controller = env('BOPS_ERROR_FORWARD_CONTROLLER', 'error')) {
             if ($action = env('BOPS_ERROR_FORWARD_NOT_FOUND', 'notFound')) {
                 $this->notFound([
+                    'module' => env('BOPS_ERROR_FORWARD_MODULE'),
                     'controller' => $controller,
                     'action' => $action
                 ]);
