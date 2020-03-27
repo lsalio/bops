@@ -31,7 +31,7 @@ class Standard implements NavigatorInterface {
      * @param string $root
      */
     public function __construct(string $root) {
-        $this->root = trim($root, '\\/');
+        $this->root = rtrim($root, '\\/');
     }
 
     /**
