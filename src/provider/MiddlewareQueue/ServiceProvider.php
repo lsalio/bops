@@ -8,7 +8,7 @@
  */
 namespace Bops\Provider\MiddlewareQueue;
 
-use Bops\Http\Request\Middleware\Queue\Deque;
+use Bops\Http\Request\Middleware\Queue\PriorityQueue;
 use Bops\Provider\AbstractServiceProvider;
 
 
@@ -35,7 +35,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     public function register() {
         $this->di->setShared($this->name(), function () {
-            return new Deque();
+            return new PriorityQueue();
         });
     }
 
