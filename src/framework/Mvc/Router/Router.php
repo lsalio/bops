@@ -32,6 +32,24 @@ class Router extends MvcRouter {
     }
 
     /**
+     * Sets the controller name
+     *
+     * @param string $controller
+     */
+    public function setControllerName(string $controller) {
+        $this->_controller = $controller;
+    }
+
+    /**
+     * Sets the action name
+     *
+     * @param string $action
+     */
+    public function setActionName(string $action) {
+        $this->_action = $action;
+    }
+
+    /**
      * Gets uri from request override by versionUri
      *
      * @param string $uri

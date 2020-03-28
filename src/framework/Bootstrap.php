@@ -12,6 +12,7 @@ use Bops\Application\ApplicationInterface;
 use Bops\Exception\Framework\Bootstrap\UnknownApplicationException;
 use Bops\Listener\Adapter\Database as DatabaseListener;
 use Bops\Listener\Adapter\Dispatcher as DispatcherListener;
+use Bops\Listener\Adapter\Router as RouterListener;
 use Bops\Listener\Adapter\View as ViewListener;
 use Bops\Mvc\Application;
 use Bops\Mvc\Dispatcher\Factory as DispatcherFactory;
@@ -159,6 +160,7 @@ class Bootstrap {
         ServiceProviderInstaller::setup(new VoltServiceProvider());
         // listener services
         $this->di->setShared('dispatcher.listener', new DispatcherListener());
+        $this->di->setShared('router.listener', new RouterListener());
         $this->di->setShared('view.listener', new ViewListener());
         $this->di->setShared('db.listener', new DatabaseListener());
         // defaults
