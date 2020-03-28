@@ -45,7 +45,8 @@ class ServiceProvider extends AbstractServiceProvider {
             $router->setEventsManager(container('eventsManager'));
             if ($listener = container('router.listener')) {
                 if ($listener instanceof ListenerInterface) {
-                    container('eventsManager')->attach('router', $listener);
+                    /* @see Manager::listen() */
+                    container('eventsManager')->listen('router', $listener);
                 }
             }
 

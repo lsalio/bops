@@ -10,6 +10,7 @@ namespace Bops\Mvc\Dispatcher;
 
 use Bops\Http\Uri\Version;
 use Phalcon\Mvc\Dispatcher as MvcDispatcher;
+use function Xet\array_at;
 
 
 /**
@@ -37,7 +38,7 @@ class Dispatcher extends MvcDispatcher {
             $forward['action'] = array_shift($params);
         }
 
-        $forward['params'] = $params;
+        $forward['params'] = array_merge($params, array_at($forward, 'params', []), $this->getParams());
         return parent::forward($forward);
     }
 

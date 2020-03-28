@@ -42,7 +42,8 @@ class Pool extends Connection {
         $connection->setEventsManager(container('eventsManager'));
         if ($listener = container('db.listener')) {
             if ($listener instanceof ListenerInterface) {
-                container('eventsManager')->attach('db', $listener);
+                /* @see Manager::listen() */
+                container('eventsManager')->listen('db', $listener);
             }
         }
 

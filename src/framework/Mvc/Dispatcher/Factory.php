@@ -31,7 +31,8 @@ class Factory {
         $dispatcher->setEventsManager(container('eventsManager'));
         if ($listener = container('dispatcher.listener')) {
             if ($listener instanceof ListenerInterface) {
-                container('eventsManager')->attach('dispatch', $listener);
+                /* @see Manager::listen() */
+                container('eventsManager')->listen('dispatch', $listener);
             }
         }
 

@@ -47,7 +47,8 @@ class Factory {
         $view->setEventsManager(container('eventsManager'));
         if ($listener = container('view.listener')) {
             if ($listener instanceof ListenerInterface) {
-                container('eventsManager')->attach('view', $listener);
+                /* @see Manager::listen() */
+                container('eventsManager')->listen('view', $listener);
             }
         }
 

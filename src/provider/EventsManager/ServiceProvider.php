@@ -8,8 +8,8 @@
  */
 namespace Bops\Provider\EventsManager;
 
+use Bops\Events\Manager as EventsManager;
 use Bops\Provider\AbstractServiceProvider;
-use Phalcon\Events\Manager as EventsManager;
 
 
 /**

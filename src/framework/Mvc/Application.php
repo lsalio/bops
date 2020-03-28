@@ -33,7 +33,8 @@ class Application extends MvcApplication implements ApplicationInterface {
         $this->setEventsManager(container('eventsManager'));
         if ($listener = container('application.listener')) {
             if ($listener instanceof ListenerInterface) {
-                container('eventsManager')->attach('application', $listener);
+                /* @see Manager::listen() */
+                container('eventsManager')->listen('application', $listener);
             }
         }
 
