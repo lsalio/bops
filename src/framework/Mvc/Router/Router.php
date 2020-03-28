@@ -78,7 +78,7 @@ class Router extends MvcRouter {
             'module' => 1
         ]);
 
-        if ($module = env('MODULE_DEFAULT')) {
+        if ($module = env('SERVICE_APPLICATION_MODULE_DEFAULT')) {
             $this->add('/', [
                 'module' => $module
             ]);
