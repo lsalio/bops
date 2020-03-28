@@ -3,6 +3,8 @@ wjiec/bops
 
 An phalcon-based secondary development framework.
 
+checks bops example: [bops-example](https://github.com/wjiec/php-bops-example)
+
 
 ### Installation
 
