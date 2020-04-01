@@ -37,6 +37,10 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     public function register() {
         $this->di->set($this->name(), function(string $filename = '') {
+            if ($logger = container("logger.{$filename}")) {
+                return $logger;
+            }
+
             if (empty($filename)) {
                 $filename = self::LOGGER_DEFAULT_FILENAME;
                 if ($config = env('SERVICE_LOGGER_FILENAME')) {
@@ -57,6 +61,7 @@ class ServiceProvider extends AbstractServiceProvider {
             $logger = new Stream(container('navigator')->logDir("{$filename}.log"));
             $logger->setFormatter(new Plain($format, $dateFormat));
             $logger->setLevel(env('SERVICE_LOGGER_LEVEL', self::LOGGER_DEFAULT_LEVEL));
+            container()->setShared("logger.{$filename}", $logger);
 
             return $logger;
         });

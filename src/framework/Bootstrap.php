@@ -2,6 +2,8 @@
 /**
  * This file is part of bops
  *
+ * @noinspection PhpUnused
+ *
  * @copyright Copyright (C) 2020 Jayson Wang
  * @license   MIT License
  * @link      https://github.com/wjiec/php-bops
