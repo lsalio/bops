@@ -42,7 +42,7 @@ class Factory {
 
             /** @noinspection PhpIncludeInspection */
             static::$translators[$language] = new NativeArray([
-                'content' => container('navigator')->localeDir("{$language}.php")
+                'content' => include container('navigator')->localeDir("{$language}.php")
             ]);
         }
         return static::$translators[$language];
