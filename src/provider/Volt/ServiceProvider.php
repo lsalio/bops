@@ -9,7 +9,7 @@
 namespace Bops\Provider\Volt;
 
 use Bops\Environment\Environment;
-use Bops\Mvc\View\Engine\Volt\Extension\Generic;
+use Bops\Mvc\View\Engine\Volt\Extension\ExtensionInterface;
 use Bops\Navigator\NavigatorInterface;
 use Bops\Provider\AbstractServiceProvider;
 use Phalcon\Mvc\View\Engine\Volt;
@@ -59,7 +59,12 @@ class ServiceProvider extends AbstractServiceProvider {
                     return $cacheDir . DIRECTORY_SEPARATOR . $basename . '.php';
                 }
             ]);
-            $volt->getCompiler()->addExtension(new Generic($volt->getCompiler()));
+
+            if ($extension = container('volt.extension')) {
+                if ($extension instanceof ExtensionInterface) {
+                    $volt->getCompiler()->addExtension($extension->inject($volt->getCompiler()));
+                }
+            }
 
             return $volt;
         });
