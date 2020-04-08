@@ -42,10 +42,16 @@ class ServiceProvider extends AbstractServiceProvider {
             $filesystem = container('filesystem', container('navigator')->configDir());
             $filesystem->addPlugin(new ListFiles());
 
-            return (new Factory('global', new LocalDirectory($filesystem->getAdapter()->getPathPrefix())))
-                ->load(array_map(function(array $file) {
-                    return pathinfo($file['path'], PATHINFO_FILENAME);
-                }, $filesystem->listFiles()));
+            $factory = new Factory('global', new LocalDirectory($filesystem->getAdapter()->getPathPrefix()));
+            if ($filesystem->has('config.php')) {
+                $factory->load(['config']);
+            }
+
+            if ($configs = env('SERVICE_CONFIG_MODULES')) {
+                $factory->load(array_map('trim', explode(',', $configs)), true);
+            }
+
+            return $factory->dump()->get();
         });
     }
 

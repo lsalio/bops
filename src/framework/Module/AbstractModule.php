@@ -100,7 +100,7 @@ abstract class AbstractModule implements ModuleInterface {
             $name = str_replace('\\', '_', strtolower(get_class($this)));
             $di->setShared($serviceName, function() use ($dir, $name, $configs) {
                 return (new ConfigFactory($name, new LocalDirectory($dir)))
-                    ->load(array_merge(['config'], $configs));
+                    ->load(array_merge(['config'], $configs))->get();
             });
         } else {
             $di->setShared($serviceName, new Config());
