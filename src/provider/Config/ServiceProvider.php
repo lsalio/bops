@@ -46,6 +46,9 @@ class ServiceProvider extends AbstractServiceProvider {
             if ($filesystem->has('config.php')) {
                 $factory->load(['config']);
             }
+            if ($filesystem->has('modules.php')) {
+                $factory->load(['modules'], true);
+            }
 
             if ($configs = env('SERVICE_CONFIG_MODULES')) {
                 $factory->load(array_map('trim', explode(',', $configs)), true);
