@@ -33,7 +33,7 @@ class Database extends AbstractListener {
             $variables = $connection->getSqlVariables();
 
             $logger = container('logger', 'db');
-            $logger->debug(sprintf("BeforeQuery:\nStatement: %s\nVariables:%s",
+            $logger->debug(sprintf("Database beforeQuery:\nStatement: %s\nVariables:%s\n",
                 $statement, join(', ', ($variables ?? []))
             ));
         }
