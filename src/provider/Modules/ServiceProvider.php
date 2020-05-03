@@ -6,18 +6,17 @@
  * @license   MIT License
  * @link      https://github.com/wjiec/php-bops
  */
-namespace Bops\Provider\Config;
+namespace Bops\Provider\Modules;
 
 use Bops\Config\Factory;
 use Bops\Config\Loader\Adapter\LocalDirectory;
 use Bops\Provider\AbstractServiceProvider;
-use League\Flysystem\Filesystem;
 
 
 /**
  * Class ServiceProvider
  *
- * @package Bops\Provider\Config
+ * @package Bops\Provider\Modules
  */
 class ServiceProvider extends AbstractServiceProvider {
 
@@ -27,7 +26,7 @@ class ServiceProvider extends AbstractServiceProvider {
      * @return string
      */
     public function name(): string {
-        return 'config';
+        return 'modules';
     }
 
     /**
@@ -37,18 +36,10 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     public function register() {
         $this->di->setShared($this->name(), function() {
-            /* @var Filesystem $filesystem */
-            $filesystem = container('filesystem', container('navigator')->configDir());
-            $factory = new Factory('global', new LocalDirectory(container('navigator')->configDir()));
-            if ($filesystem->has('config.php')) {
-                $factory->load(['config']);
-            }
-
-            if ($configs = env('SERVICE_CONFIG_MODULES')) {
-                $factory->load(array_map('trim', explode(',', $configs)), true);
-            }
-
-            return $factory->dump()->get();
+            $configDir = container('navigator')->configDir();
+            return (new Factory('__modules__', new LocalDirectory($configDir)))
+                ->load(['modules'])->dump()
+                ->get()->modules;
         });
     }
 

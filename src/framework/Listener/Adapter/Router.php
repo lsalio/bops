@@ -30,7 +30,7 @@ class Router extends AbstractListener {
      */
     public function afterCheckRoutes(Event $event, MvcRouter $router) {
         if ($module = $router->getModuleName()) {
-            if (!isset(container('config')->modules->{$module})) {
+            if (!isset(container('modules')->{$module})) {
                 if ($errorModule = env('BOPS_ERROR_FORWARD_MODULE')) {
                     container('application')->registerModules([
                         $module => container('application')->getModule($errorModule)

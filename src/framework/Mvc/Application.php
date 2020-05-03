@@ -59,8 +59,8 @@ class Application extends MvcApplication implements ApplicationInterface {
             $this->setDefaultModule($module);
         }
 
-        if (isset(container('config')->modules)) {
-            $this->registerModules(container('config')->modules->toArray());
+        if ($modules = container('modules')->toArray()) {
+            $this->registerModules($modules);
         }
     }
 

@@ -29,6 +29,7 @@ use Bops\Provider\EventsManager\ServiceProvider as EventsManagerServiceProvider;
 use Bops\Provider\Filesystem\ServiceProvider as FilesystemServiceProvider;
 use Bops\Provider\Logger\ServiceProvider as LoggerServiceProvider;
 use Bops\Provider\MiddlewareQueue\ServiceProvider as MiddlewareQueueServiceProvider;
+use Bops\Provider\Modules\ServiceProvider as ModulesServiceProvider;
 use Bops\Provider\Router\ServiceProvider as RouterServiceProvider;
 use Bops\Provider\ServiceProviderInstaller;
 use Bops\Provider\Translator\ServiceProvider as TranslatorServiceProvider;
@@ -155,6 +156,7 @@ class Bootstrap {
         ServiceProviderInstaller::setup(new FilesystemServiceProvider());
         ServiceProviderInstaller::setup(new LoggerServiceProvider());
         ServiceProviderInstaller::setup(new MiddlewareQueueServiceProvider());
+        ServiceProviderInstaller::setup(new ModulesServiceProvider());
         ServiceProviderInstaller::setup(new RouterServiceProvider());
         ServiceProviderInstaller::setup(new TranslatorServiceProvider());
         ServiceProviderInstaller::setup(new UrlServiceProvider());

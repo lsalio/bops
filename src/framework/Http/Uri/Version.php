@@ -50,13 +50,11 @@ class Version {
     public function __construct() {
         $this->states = array();
 
-        if (isset(container('config')->modules)) {
-            $this->modules = container('config')->modules->toArray();
-            foreach ($this->modules as $name => $module) {
-                $this->states[$name] = false;
-                if (isset($module['metadata']) && is_array($module['metadata'])) {
-                    $this->states[$name] = $module['metadata']['versionUri'] ?? false;
-                }
+        $this->modules = container('modules')->toArray();
+        foreach ($this->modules as $name => $module) {
+            $this->states[$name] = false;
+            if (isset($module['metadata']) && is_array($module['metadata'])) {
+                $this->states[$name] = $module['metadata']['versionUri'] ?? false;
             }
         }
 
