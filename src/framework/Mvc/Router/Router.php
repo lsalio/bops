@@ -26,9 +26,10 @@ class Router extends MvcRouter {
      */
     public function __construct($defaultRoutes = false) {
         parent::__construct($defaultRoutes);
-
-        $this->initModuleRoutes();
-        $this->initNotFoundAction();
+        if (!$defaultRoutes) {
+            $this->initModuleRoutes();
+            $this->initNotFoundAction();
+        }
     }
 
     /**

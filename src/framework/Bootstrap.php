@@ -16,7 +16,7 @@ use Bops\Listener\Adapter\Database as DatabaseListener;
 use Bops\Listener\Adapter\Dispatcher as DispatcherListener;
 use Bops\Listener\Adapter\Router as RouterListener;
 use Bops\Listener\Adapter\View as ViewListener;
-use Bops\Mvc\Application;
+use Bops\Mvc\Application as MvcApplication;
 use Bops\Mvc\Dispatcher\Factory as DispatcherFactory;
 use Bops\Mvc\View\Factory;
 use Bops\Navigator\NavigatorInterface;
@@ -106,8 +106,9 @@ class Bootstrap {
     protected function setupEnvironment(NavigatorInterface $navigator) {
         try {
             Dotenv::createMutable($navigator->rootDir())->load();
-            if ($env = env('BOPS_ENVIRONMENT', 'development')) {
+            if ($env = env('BOPS_ENVIRONMENT', 'production')) {
                 ServiceProviderInstaller::setup(new EnvironmentServiceProvider());
+                // initializing environment service
                 container('environment', $env);
 
                 Dotenv::createMutable($navigator->rootDir(), [".env.{$env}"])->load();
@@ -168,7 +169,7 @@ class Bootstrap {
         $this->di->setShared('view.listener', new ViewListener());
         $this->di->setShared('db.listener', new DatabaseListener());
         // defaults
-        $this->di->setShared('application', new Application());
+        $this->di->setShared('application', new MvcApplication());
         $this->di->setShared('dispatcher', DispatcherFactory::factory(/* module */''));
         $this->di->setShared('view', Factory::html());
     }
@@ -180,7 +181,9 @@ class Bootstrap {
      */
     protected function setupServiceProviders(array $providers) {
         foreach ($providers as $provider) {
-            ServiceProviderInstaller::setup(new $provider());
+            if (is_string($provider) && class_exists($provider)) {
+                ServiceProviderInstaller::setup(new $provider());
+            }
         }
     }
 
