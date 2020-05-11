@@ -10,7 +10,7 @@ namespace Bops\Provider\Database;
 
 use Bops\Database\Pool;
 use Bops\Provider\AbstractServiceProvider;
-use Bops\Utils\Env\Pool\ConnectionInstaller;
+use Bops\Utils\Env\Connection\Installer;
 
 
 /**
@@ -36,17 +36,17 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     public function register() {
         $pool = new Pool();
-        if ($primary = env('SERVICE_CACHE_PROVIDER_PRIMARY')) {
+        if ($primary = env('SERVICE_DATABASE_PROVIDER_PRIMARY')) {
             $pool->setPrimary($primary);
         }
-        if ($writers = env('SERVICE_CACHE_PROVIDER_WRITER')) {
+        if ($writers = env('SERVICE_DATABASE_PROVIDER_WRITER')) {
             $pool->setWriters(array_map('trim', explode(',', $writers)));
         }
-        if ($readers = env('SERVICE_CACHE_PROVIDER_READERS')) {
+        if ($readers = env('SERVICE_DATABASE_PROVIDER_READERS')) {
             $pool->setReaders(array_map('trim', explode(',', $readers)));
         }
 
-        ConnectionInstaller::register($this->name(), $pool, $this->di);
+        Installer::register($this->name(), $pool, $this->di);
     }
 
 }

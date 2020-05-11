@@ -6,26 +6,26 @@
  * @license   MIT License
  * @link      https://github.com/wjiec/php-bops
  */
-namespace Bops\Utils\Env\Pool;
 
-
+namespace Bops\Utils\Env\Connection;
 use Phalcon\DiInterface;
 
+
 /**
- * Class ConnectionInstaller
+ * Class Installer
  *
- * @package Bops\Utils\Env\Pool
+ * @package Bops\Utils\Env\Connection
  */
-class ConnectionInstaller {
+class Installer {
 
     /**
      * Installs all connection into di
      *
      * @param string $service
-     * @param Connection $pool
+     * @param Pool $pool
      * @param DiInterface $di
      */
-    public static function register(string $service, Connection $pool, DiInterface $di) {
+    public static function register(string $service, Pool $pool, DiInterface $di) {
         $di->setShared($service, function() use ($pool) {
             return $pool->getPrimary();
         });
@@ -42,5 +42,6 @@ class ConnectionInstaller {
             });
         }
     }
+
 
 }

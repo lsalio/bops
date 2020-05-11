@@ -9,7 +9,7 @@
 namespace Bops\Database;
 
 use Bops\Listener\ListenerInterface;
-use Bops\Utils\Env\Pool\Connection;
+use Bops\Utils\Env\Connection\Pool as ConnectionPool;
 use Phalcon\Db\Adapter\Pdo\Factory as PdoFactory;
 
 
@@ -18,7 +18,7 @@ use Phalcon\Db\Adapter\Pdo\Factory as PdoFactory;
  *
  * @package Bops\Database
  */
-class Pool extends Connection {
+class Pool extends ConnectionPool {
 
     /**
      * Returns the prefix string for mapping

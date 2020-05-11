@@ -8,7 +8,7 @@
  */
 namespace Bops\Cache;
 
-use Bops\Utils\Env\Pool\Connection;
+use Bops\Utils\Env\Connection\Pool as ConnectionPool;
 use Phalcon\Cache\Backend\Factory;
 use Phalcon\Cache\Frontend\Factory as FrontendFactory;
 use function Xet\array_at;
@@ -19,7 +19,7 @@ use function Xet\array_at;
  *
  * @package Bops\Cache
  */
-class Pool extends Connection {
+class Pool extends ConnectionPool {
 
     /**
      * Returns the prefix string for mapping

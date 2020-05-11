@@ -6,17 +6,17 @@
  * @license   MIT License
  * @link      https://github.com/wjiec/php-bops
  */
-namespace Bops\Utils\Env\Pool;
+namespace Bops\Utils\Env\Connection;
 
 use function Xet\str_has_prefix;
 
 
 /**
- * Class Connection
+ * Class Pool
  *
- * @package Bops\Utils\Env\Pool
+ * @package Bops\Utils\Env\Connection
  */
-abstract class Connection {
+abstract class Pool {
 
     /**
      * The name of the primary connection
@@ -122,7 +122,7 @@ abstract class Connection {
      */
     public function getRandomWriter(): ?string {
         if (empty($this->writers)) {
-            return null;
+            return $this->primary;
         }
         return $this->writers[array_rand($this->writers)];
     }
@@ -144,6 +144,9 @@ abstract class Connection {
      */
     public function getWriter(string $name) {
         if (!in_array($name, $this->writers)) {
+            if ($name === $this->primary) {
+                return $this->getPrimary();
+            }
             return null;
         }
         return $this->getConnection($name);
@@ -171,7 +174,7 @@ abstract class Connection {
      */
     public function getRandomReader(): ?string {
         if (empty($this->readers)) {
-            return null;
+            return $this->primary;
         }
         return $this->readers[array_rand($this->readers)];
     }
@@ -193,6 +196,9 @@ abstract class Connection {
      */
     public function getReader(string $name) {
         if (!in_array($name, $this->readers)) {
+            if ($name === $this->primary) {
+                return $this->getPrimary();
+            }
             return null;
         }
         return $this->getConnection($name);
@@ -247,5 +253,6 @@ abstract class Connection {
      * @return mixed
      */
     abstract protected function makeConnection(array $config);
+
 
 }
