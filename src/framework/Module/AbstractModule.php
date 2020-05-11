@@ -9,7 +9,7 @@
 namespace Bops\Module;
 
 use Bops\Config\Factory as ConfigFactory;
-use Bops\Config\Loader\Adapter\LocalDirectory;
+use Bops\Config\Loader\Adapter\PathJoiner;
 use Bops\Mvc\Dispatcher\Factory as DispatcherFactory;
 use Bops\Mvc\View\Factory as ViewFactory;
 use Bops\Provider\ServiceProviderInstaller;
@@ -99,7 +99,7 @@ abstract class AbstractModule implements ModuleInterface {
             $configs = $this->configModules();
             $name = str_replace('\\', '_', strtolower(get_class($this)));
             $di->setShared($serviceName, function() use ($dir, $name, $configs) {
-                return (new ConfigFactory($name, new LocalDirectory($dir)))
+                return (new ConfigFactory($name, new PathJoiner($dir)))
                     ->load(array_merge(['config'], $configs))->get();
             });
         } else {

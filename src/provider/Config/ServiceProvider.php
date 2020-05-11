@@ -9,7 +9,7 @@
 namespace Bops\Provider\Config;
 
 use Bops\Config\Factory;
-use Bops\Config\Loader\Adapter\LocalDirectory;
+use Bops\Config\Loader\Adapter\PathJoiner;
 use Bops\Provider\AbstractServiceProvider;
 use League\Flysystem\Filesystem;
 
@@ -39,7 +39,7 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->di->setShared($this->name(), function() {
             /* @var Filesystem $filesystem */
             $filesystem = container('filesystem', container('navigator')->configDir());
-            $factory = new Factory('global', new LocalDirectory(container('navigator')->configDir()));
+            $factory = new Factory('global', new PathJoiner(container('navigator')->configDir()));
             if ($filesystem->has('config.php')) {
                 $factory->load(['config']);
             }

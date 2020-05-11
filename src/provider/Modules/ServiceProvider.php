@@ -8,9 +8,8 @@
  */
 namespace Bops\Provider\Modules;
 
-use Bops\Config\Factory;
-use Bops\Config\Loader\Adapter\LocalDirectory;
 use Bops\Provider\AbstractServiceProvider;
+use Phalcon\Config;
 
 
 /**
@@ -36,10 +35,16 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     public function register() {
         $this->di->setShared($this->name(), function() {
-            $configDir = container('navigator')->configDir();
-            return (new Factory('__modules__', new LocalDirectory($configDir)))
-                ->load(['modules'])->dump()
-                ->get()->modules;
+            $configPath = container('navigator')->configDir('modules.php');
+            if (file_exists($configPath)) {
+                /** @noinspection PhpIncludeInspection */
+                $modules = include $configPath;
+                if (!($modules instanceof Config)) {
+                    $modules = new Config($modules);
+                }
+                return $modules;
+            }
+            return new Config([]);
         });
     }
 

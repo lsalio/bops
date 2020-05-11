@@ -12,11 +12,11 @@ use Bops\Config\Loader\AbstractLoader;
 
 
 /**
- * Class LocalDirectory
+ * Class PathJoiner
  *
  * @package Bops\Config\Loader\Adapter
  */
-class LocalDirectory extends AbstractLoader {
+class PathJoiner extends AbstractLoader {
 
     /**
      * Root directory
