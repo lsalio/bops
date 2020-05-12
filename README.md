@@ -23,3 +23,7 @@ use Bops\Navigator\Adapter\Standard;
 
 echo (new Bootstrap(new Standard(dirname(__DIR__))))->run();
 ```
+
+#### TODO
+
+- [ ] Correct status code(400/404/500)

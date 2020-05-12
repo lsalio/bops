@@ -53,6 +53,9 @@ class Json extends AbstractView {
      * @return string|void
      */
     public function getContent() {
+        if (empty($this->_viewParams)) {
+            return '{}'; // bad style
+        }
         return json_encode($this->_viewParams, $this->flags);
     }
 

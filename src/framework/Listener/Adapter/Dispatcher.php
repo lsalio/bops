@@ -13,11 +13,11 @@ namespace Bops\Listener\Adapter;
 use Bops\Http\Uri\Version;
 use Bops\Listener\AbstractListener;
 use Bops\Mvc\Controller\Tagging\Deeper;
+use Bops\Utils\Proxy\Nothing;
 use Exception;
 use Phalcon\Events\Event;
 use Phalcon\Mvc\Dispatcher as MvcDispatcher;
 use Phalcon\Text;
-use stdClass;
 use Throwable;
 use Whoops\Run;
 
@@ -140,7 +140,6 @@ class Dispatcher extends AbstractListener {
     protected function doErrorForward(MvcDispatcher $dispatcher, Throwable $exception) {
         try {
             if ($dispatcher->getNamespaceName()) {
-                container('logger', 'sys')->error($exception->getMessage());
                 if ($controller = env('BOPS_ERROR_FORWARD_CONTROLLER', 'error')) {
                     if ($dispatcher->getControllerName() === $controller) {
                         // forward failure by the the same controller
@@ -164,15 +163,16 @@ class Dispatcher extends AbstractListener {
                     }
                 }
             }
-        } catch (Throwable $e) {
-            container('logger', 'sys')->error($e->getMessage());
-        }
+        } catch (Throwable $e) {}
 
         /* @see Run::handleException() */
         container('errorHandler')->handleException($exception);
         if ($statusCode = env('BOPS_ERROR_HTTP_STATUS_CODE', 404)) {
             container('response')->setStatusCode($statusCode);
         }
+
+        $dispatcher->forward(['namespace' => '\\Bops\\__Internal__\\']);
+        class_alias(Nothing::class, $dispatcher->getHandlerClass());
         return $dispatcher->setReturnedValue(env('BOPS_ERROR_HTTP_MESSAGE', ''));
     }
 
