@@ -6,8 +6,8 @@
  * @license   MIT License
  * @link      https://github.com/wjiec/php-bops
  */
-
 namespace Bops\Utils\Env\Connection;
+
 use Phalcon\DiInterface;
 
 

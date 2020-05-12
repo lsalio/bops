@@ -43,6 +43,8 @@ class Router extends AbstractListener {
                     if ($action = env('BOPS_ERROR_FORWARD_NOT_FOUND', 'notFound')) {
                         $router->setActionName($action);
                     }
+
+                    container('response')->setStatusCode(404);
                 }
             }
         }

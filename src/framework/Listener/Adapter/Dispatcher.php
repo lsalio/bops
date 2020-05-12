@@ -10,7 +10,6 @@
  */
 namespace Bops\Listener\Adapter;
 
-use Bops\Http\Request\Middleware\MiddlewareInterface;
 use Bops\Http\Uri\Version;
 use Bops\Listener\AbstractListener;
 use Bops\Mvc\Controller\Tagging\Deeper;
@@ -18,6 +17,7 @@ use Exception;
 use Phalcon\Events\Event;
 use Phalcon\Mvc\Dispatcher as MvcDispatcher;
 use Phalcon\Text;
+use stdClass;
 use Throwable;
 use Whoops\Run;
 
@@ -30,6 +30,13 @@ use Whoops\Run;
 class Dispatcher extends AbstractListener {
 
     /**
+     * status of middleware check
+     *
+     * @var bool
+     */
+    protected $validated = false;
+
+    /**
      * Trigger before on handler execute
      *
      * @param Event $event
@@ -38,15 +45,17 @@ class Dispatcher extends AbstractListener {
      */
     public function beforeExecuteRoute(Event $event, MvcDispatcher $dispatcher) {
         // Check if only process middleware when first time
-        if ($dispatcher->wasForwarded()) {
+        if ($this->validated) {
             return;
         }
 
         if ($deque = container('middlewareQueue')) {
-            /* @var MiddlewareInterface $middleware */
+            $this->validated = true;
+
+            $request = container('request');
             foreach ($deque as $middleware) {
                 try {
-                    if ($middleware->process(container('request'))) {
+                    if ($middleware->process($request)) {
                         continue;
                     }
                 } catch (Throwable $e) {
@@ -131,8 +140,22 @@ class Dispatcher extends AbstractListener {
     protected function doErrorForward(MvcDispatcher $dispatcher, Throwable $exception) {
         try {
             if ($dispatcher->getNamespaceName()) {
+                container('logger', 'sys')->error($exception->getMessage());
                 if ($controller = env('BOPS_ERROR_FORWARD_CONTROLLER', 'error')) {
-                    if ($action = env('BOPS_ERROR_FORWARD_INTERNAL_ERROR', 'internal')) {
+                    if ($dispatcher->getControllerName() === $controller) {
+                        // forward failure by the the same controller
+                        throw $exception;
+                    }
+
+                    $action = env('BOPS_ERROR_FORWARD_INTERNAL_ERROR', 'internal');
+                    switch ($exception->getCode()) {
+                        case MvcDispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+                        case MvcDispatcher::EXCEPTION_ACTION_NOT_FOUND:
+                            $action = env('BOPS_ERROR_FORWARD_NOT_FOUND', 'notFound');
+                            break;
+                    }
+
+                    if ($action) {
                         return $dispatcher->forward([
                             'controller' => $controller,
                             'action' => $action,
