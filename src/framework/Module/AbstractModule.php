@@ -10,6 +10,7 @@ namespace Bops\Module;
 
 use Bops\Config\Factory as ConfigFactory;
 use Bops\Config\Loader\Adapter\PathJoiner;
+use Bops\Di\Services;
 use Bops\Mvc\Dispatcher\Factory as DispatcherFactory;
 use Bops\Mvc\View\Factory as ViewFactory;
 use Bops\Provider\ServiceProviderInstaller;
@@ -113,9 +114,9 @@ abstract class AbstractModule implements ModuleInterface {
      * @param DiInterface $di
      */
     private function setupDispatcher(DiInterface $di): void {
-        if (isset(container('moduleConfig')->module->dispatcher)) {
+        if (isset(container($this->configServiceName())->module->dispatcher)) {
             /* @var $config Config */
-            if ($config = container('moduleConfig')->module->dispatcher) {
+            if ($config = container($this->configServiceName())->module->dispatcher) {
                 $module = $this->moduleName();
                 $di->setShared('dispatcher', function() use ($module, $config) {
                     return DispatcherFactory::factory($module, $config->toArray());
@@ -144,7 +145,7 @@ abstract class AbstractModule implements ModuleInterface {
                     });
                 } else {
                     // disabled view implicit
-                    container('app')->useImplicitView(false);
+                    container(Services::SERVICE_APPLICATION)->useImplicitView(false);
                 }
             }
         }
