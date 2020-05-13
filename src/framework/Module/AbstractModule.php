@@ -10,7 +10,6 @@ namespace Bops\Module;
 
 use Bops\Config\Factory as ConfigFactory;
 use Bops\Config\Loader\Adapter\PathJoiner;
-use Bops\Di\Services;
 use Bops\Mvc\Dispatcher\Factory as DispatcherFactory;
 use Bops\Mvc\View\Factory as ViewFactory;
 use Bops\Provider\ServiceProviderInstaller;
@@ -145,7 +144,7 @@ abstract class AbstractModule implements ModuleInterface {
                     });
                 } else {
                     // disabled view implicit
-                    container(Services::SERVICE_APPLICATION)->useImplicitView(false);
+                    container('application')->useImplicitView(false);
                 }
             }
         }

@@ -16,6 +16,4 @@ use Phalcon\Mvc\ModuleDefinitionInterface;
  *
  * @package Bops\Module
  */
-interface ModuleInterface extends ModuleDefinitionInterface {
-
-}
+interface ModuleInterface extends ModuleDefinitionInterface {}
