@@ -45,7 +45,9 @@ class Json extends AbstractView {
      * @param string $actionName
      * @param null $params
      */
-    public function render($controllerName, $actionName, $params = null) {}
+    public function render($controllerName, $actionName, $params = null) {
+        container('response')->setContentType('application/json; charset=utf-8');
+    }
 
     /**
      * Build data and return it
