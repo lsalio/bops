@@ -23,6 +23,13 @@ use Throwable;
 abstract class Model extends MvcModel {
 
     /**
+     * refresh model after save
+     *
+     * @var bool
+     */
+    private $refreshAfterSave = true;
+
+    /**
      * Sets up the model
      */
     public function initialize() {
@@ -39,14 +46,14 @@ abstract class Model extends MvcModel {
     /**
      * Returns the save and refresh succeed both
      *
-     * @param null $data
-     * @param null $whiteList
+     * @param mixed|null $data
+     * @param mixed|null $whiteList
      * @return bool
      * @throws ModelSaveException
      */
     public function save($data = null, $whiteList = null) {
         try {
-            if (parent::save($data, $whiteList) && $this->refresh()) {
+            if (parent::save($data, $whiteList) && (($this->refreshAfterSave && $this->refresh()) || true)) {
                 return true;
             }
             throw new ModelSaveException(join('|', $this->getMessages()));
@@ -87,6 +94,15 @@ abstract class Model extends MvcModel {
 
         $db->execute($this->prepareSql($sql), $args);
         return $db->affectedRows();
+    }
+
+    /**
+     * Sets refresh model after save
+     *
+     * @param bool $refresh
+     */
+    protected function setRefreshAfterSave(bool $refresh) {
+        $this->refreshAfterSave = $refresh;
     }
 
     /**
