@@ -32,6 +32,7 @@ use Bops\Provider\MiddlewareQueue\ServiceProvider as MiddlewareQueueServiceProvi
 use Bops\Provider\Modules\ServiceProvider as ModulesServiceProvider;
 use Bops\Provider\Router\ServiceProvider as RouterServiceProvider;
 use Bops\Provider\ServiceProviderInstaller;
+use Bops\Provider\Session\ServiceProvider as SessionServiceProvider;
 use Bops\Provider\Translator\ServiceProvider as TranslatorServiceProvider;
 use Bops\Provider\Url\ServiceProvider as UrlServiceProvider;
 use Bops\Provider\VersionUri\ServiceProvider as VersionUriServiceProvider;
@@ -159,6 +160,7 @@ class Bootstrap {
         ServiceProviderInstaller::setup(new MiddlewareQueueServiceProvider());
         ServiceProviderInstaller::setup(new ModulesServiceProvider());
         ServiceProviderInstaller::setup(new RouterServiceProvider());
+        ServiceProviderInstaller::setup(new SessionServiceProvider());
         ServiceProviderInstaller::setup(new TranslatorServiceProvider());
         ServiceProviderInstaller::setup(new UrlServiceProvider());
         ServiceProviderInstaller::setup(new VersionUriServiceProvider());

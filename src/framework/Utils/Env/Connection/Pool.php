@@ -8,7 +8,7 @@
  */
 namespace Bops\Utils\Env\Connection;
 
-use function Xet\str_has_prefix;
+use Bops\Utils\Env\Config\Loader;
 
 
 /**
@@ -205,22 +205,14 @@ abstract class Pool {
     }
 
     /**
+     * Load configure from env
+     *
      * @param string $name
      * @return array
      */
     protected function loadConfig(string $name): array {
         if (!isset($this->configures[$name])) {
-            $prefix = $this->getPrefix($name);
-            $keys = array_filter(array_keys($_SERVER), function(string $key) use ($prefix) {
-                return str_has_prefix($key, $prefix);
-            });
-
-            $values = array_map(function(string $key) { return $_SERVER[$key]; }, $keys);
-            $keys = array_map(function(string $key) use ($prefix) {
-                return strtolower(substr($key, strlen($prefix)));
-            }, $keys);
-
-            $this->configures[$name] = array_combine($keys, $values);
+            $this->configures[$name] = Loader::load($this->getPrefix($name));
         }
         return $this->configures[$name];
     }

@@ -8,6 +8,7 @@
  */
 namespace Bops\Mvc\View\Adapter;
 
+use Bops\Exception\Framework\Mvc\View\JsonViewException;
 use Bops\Mvc\View\AbstractView;
 
 
@@ -53,12 +54,18 @@ class Json extends AbstractView {
      * Build data and return it
      *
      * @return string|void
+     * @throws JsonViewException
      */
     public function getContent() {
         if (empty($this->_viewParams)) {
             return '{}'; // bad style
         }
-        return json_encode($this->_viewParams, $this->flags);
+
+        $response = json_encode($this->_viewParams, $this->flags);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new JsonViewException(json_last_error_msg());
+        }
+        return $response;
     }
 
 }
