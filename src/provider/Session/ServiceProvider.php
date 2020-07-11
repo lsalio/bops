@@ -41,7 +41,10 @@ class ServiceProvider extends AbstractServiceProvider {
                 $config['uniqueId'] = $config['unique_id'];
                 unset($config['unique_id']);
             }
-            return Factory::load($config);
+            $session = Factory::load($config);
+            $session->start();
+
+            return $session;
         });
     }
 
