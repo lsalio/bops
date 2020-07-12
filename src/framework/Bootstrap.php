@@ -85,10 +85,10 @@ class Bootstrap {
      * Run the application
      *
      * @param string $uri
-     * @return string
+     * @return string|null
      * @throws UnknownApplicationException
      */
-    public function run(string $uri = ''): string {
+    public function run(string $uri = '') {
         if ($application = container('application')) {
             if ($application instanceof ApplicationInterface) {
                 /** @noinspection PhpUndefinedMethodInspection */
