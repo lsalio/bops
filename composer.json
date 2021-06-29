@@ -19,7 +19,7 @@
         "wjiec/xet": "^1.0",
         "vlucas/phpdotenv": "^4.1",
         "filp/whoops": "^2.7",
-        "league/flysystem": "^1.0",
+        "league/flysystem": "^1.0 || ^2.0",
         "psr/log": "^1.1"
     },
     "autoload": {
